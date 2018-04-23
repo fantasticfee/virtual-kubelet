@@ -49,7 +49,7 @@ func (p *MockProvider) CreatePod(pod *v1.Pod) error {
 
 // UpdatePod accepts a Pod definition and updates its reference.
 func (p *MockProvider) UpdatePod(pod *v1.Pod) error {
-	log.Printf("receive UpdatePod %q\n", pod.Name)
+	// log.Printf("receive UpdatePod %q\n", pod.Name)
 
 	key, err := buildKey(pod)
 	if err != nil {
@@ -63,7 +63,7 @@ func (p *MockProvider) UpdatePod(pod *v1.Pod) error {
 
 // DeletePod deletes the specified pod out of memory.
 func (p *MockProvider) DeletePod(pod *v1.Pod) (err error) {
-	log.Printf("receive DeletePod %q\n", pod.Name)
+	// log.Printf("receive DeletePod %q\n", pod.Name)
 
 	key, err := buildKey(pod)
 	if err != nil {
@@ -77,7 +77,7 @@ func (p *MockProvider) DeletePod(pod *v1.Pod) (err error) {
 
 // GetPod returns a pod by name that is stored in memory.
 func (p *MockProvider) GetPod(namespace, name string) (pod *v1.Pod, err error) {
-	log.Printf("receive GetPod %q\n", name)
+	// log.Printf("receive GetPod %q\n", name)
 
 	key, err := buildKeyFromNames(namespace, name)
 	if err != nil {
@@ -93,14 +93,14 @@ func (p *MockProvider) GetPod(namespace, name string) (pod *v1.Pod, err error) {
 
 // GetContainerLogs retrieves the logs of a container by name from the provider.
 func (p *MockProvider) GetContainerLogs(namespace, podName, containerName string, tail int) (string, error) {
-	log.Printf("receive GetContainerLogs %q\n", podName)
+	// log.Printf("receive GetContainerLogs %q\n", podName)
 	return "", nil
 }
 
 // GetPodStatus returns the status of a pod by name that is "running".
 // returns nil if a pod by that name is not found.
 func (p *MockProvider) GetPodStatus(namespace, name string) (*v1.PodStatus, error) {
-	log.Printf("receive GetPodStatus %q\n", name)
+	// log.Printf("receive GetPodStatus %q\n", name)
 
 	now := metav1.NewTime(time.Now())
 
@@ -149,7 +149,7 @@ func (p *MockProvider) GetPodStatus(namespace, name string) (*v1.PodStatus, erro
 
 // GetPods returns a list of all pods known to be "running".
 func (p *MockProvider) GetPods() ([]*v1.Pod, error) {
-	log.Printf("receive GetPods\n")
+	// log.Printf("receive GetPods\n")
 
 	var pods []*v1.Pod
 
