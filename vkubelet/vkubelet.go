@@ -11,10 +11,7 @@ import (
 	"time"
 
 	"github.com/virtual-kubelet/virtual-kubelet/manager"
-	"github.com/virtual-kubelet/virtual-kubelet/providers/azure"
-	"github.com/virtual-kubelet/virtual-kubelet/providers/hypersh"
 	"github.com/virtual-kubelet/virtual-kubelet/providers/mock"
-	"github.com/virtual-kubelet/virtual-kubelet/providers/web"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -75,21 +72,6 @@ func New(nodeName, operatingSystem, namespace, kubeConfig, taint, provider, prov
 
 	var p Provider
 	switch provider {
-	case "azure":
-		p, err = azure.NewACIProvider(providerConfig, rm, nodeName, operatingSystem, internalIP, daemonEndpointPort)
-		if err != nil {
-			return nil, err
-		}
-	case "hyper":
-		p, err = hypersh.NewHyperProvider(providerConfig, rm, nodeName, operatingSystem)
-		if err != nil {
-			return nil, err
-		}
-	case "web":
-		p, err = web.NewBrokerProvider(nodeName, operatingSystem, daemonEndpointPort)
-		if err != nil {
-			return nil, err
-		}
 	case "mock":
 		p, err = mock.NewMockProvider(nodeName, operatingSystem, internalIP, daemonEndpointPort)
 		if err != nil {
