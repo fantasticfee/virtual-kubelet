@@ -34,7 +34,7 @@ type Server struct {
 }
 
 // New creates a new virtual-kubelet server.
-func New(nodeName, operatingSystem, namespace, kubeConfig, taint, provider, providerConfig string) (*Server, error) {
+func New(nodeName, operatingSystem, namespace, kubeConfig, taint, providerConfig string) (*Server, error) {
 	var (
 		config *rest.Config
 		err    error
@@ -71,14 +71,9 @@ func New(nodeName, operatingSystem, namespace, kubeConfig, taint, provider, prov
 	internalIP := os.Getenv("VKUBELET_POD_IP")
 
 	var p Provider
-	switch provider {
-	case "mock":
-		p, err = mock.NewMockProvider(nodeName, operatingSystem, internalIP, daemonEndpointPort)
-		if err != nil {
-			return nil, err
-		}
-	default:
-		fmt.Printf("Provider '%s' is not supported\n", provider)
+	p, err = mock.NewMockProvider(nodeName, operatingSystem, internalIP, daemonEndpointPort)
+	if err != nil {
+		return nil, err
 	}
 
 	s := &Server{

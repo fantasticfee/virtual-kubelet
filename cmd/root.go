@@ -27,6 +27,8 @@ import (
 	"github.com/virtual-kubelet/virtual-kubelet/providers"
 	vkubelet "github.com/virtual-kubelet/virtual-kubelet/vkubelet"
 	corev1 "k8s.io/api/core/v1"
+	"strconv"
+	"time"
 )
 
 var kubeletConfig string
@@ -38,6 +40,8 @@ var provider string
 var providerConfig string
 var taint string
 
+var nodeNumberString string
+
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "virtual-kubelet",
@@ -46,12 +50,19 @@ var RootCmd = &cobra.Command{
 backend implementation allowing users to create kubernetes nodes without running the kubelet.
 This allows users to schedule kubernetes workloads on nodes that aren't running Kubernetes.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(kubeConfig)
-		f, err := vkubelet.New(nodeName, operatingSystem, kubeNamespace, kubeConfig, taint, provider, providerConfig)
-		if err != nil {
-			log.Fatal(err)
+		nodeNumber, _ := strconv.Atoi(nodeNumberString)
+		for i := 1; i <= nodeNumber; i++ {
+			go func(i int) {
+				// fmt.Println(kubeConfig)
+				f, err := vkubelet.New(nodeName + "-" + strconv.Itoa(i), operatingSystem, kubeNamespace, kubeConfig, taint, providerConfig)
+				if err != nil {
+					log.Fatal(err)
+				}
+				f.Run()
+			}(i)
 		}
-		f.Run()
+
+		time.Sleep(1 * time.Hour)
 	},
 }
 
@@ -73,11 +84,12 @@ func init() {
 	//RootCmd.PersistentFlags().StringVar(&kubeletConfig, "config", "", "config file (default is $HOME/.virtual-kubelet.yaml)")
 	RootCmd.PersistentFlags().StringVar(&kubeConfig, "kubeconfig", "", "config file (default is $HOME/.kube/config)")
 	RootCmd.PersistentFlags().StringVar(&kubeNamespace, "namespace", "", "kubernetes namespace (default is 'all')")
-	RootCmd.PersistentFlags().StringVar(&nodeName, "nodename", "virtual-kubelet", "kubernetes node name")
+	RootCmd.PersistentFlags().StringVar(&nodeName, "nodename", "virtual-kubelet-", "kubernetes node name")
 	RootCmd.PersistentFlags().StringVar(&operatingSystem, "os", "Linux", "Operating System (Linux/Windows)")
-	RootCmd.PersistentFlags().StringVar(&provider, "provider", "", "cloud provider")
+	RootCmd.PersistentFlags().StringVar(&provider, "provider", "mock", "cloud provider")
 	RootCmd.PersistentFlags().StringVar(&taint, "taint", "", "apply taint to node, making scheduling explicit")
 	RootCmd.PersistentFlags().StringVar(&providerConfig, "provider-config", "", "cloud provider configuration file")
+	RootCmd.PersistentFlags().StringVar(&nodeNumberString, "nodenumber", "100", "number of nodes to be registered")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
