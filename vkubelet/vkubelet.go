@@ -40,6 +40,7 @@ func New(nodeName, operatingSystem, namespace, kubeConfig, taint, providerConfig
 		err    error
 	)
 	// Check if the kubeConfig file exists.
+	fmt.Println("[DEBUG] kubeConfig: " + kubeConfig)
 	if _, err := os.Stat(kubeConfig); !os.IsNotExist(err) {
 		// Get the kubeconfig from the filepath.
 		config, err = clientcmd.BuildConfigFromFlags("", kubeConfig)
@@ -163,7 +164,9 @@ func (s *Server) Run() error {
 		FieldSelector: fields.OneTermEqualSelector("spec.nodeName", s.nodeName).String(),
 	}
 
-	pods, err := s.k8sClient.CoreV1().Pods(s.namespace).List(opts)
+	fmt.Println("[debug] >>>>>>>")
+	pods, err := s.k8sClient.CoreV1().Pods(s.namespace).List(opts)  // 这一行有问题，会报出"open: no such file or directory"的bug
+	fmt.Println("[debug] >>>>>>>")
 	if err != nil {
 		log.Fatal(err)
 	}
