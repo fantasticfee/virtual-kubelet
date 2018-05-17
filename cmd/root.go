@@ -89,7 +89,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&provider, "provider", "mock", "cloud provider")
 	RootCmd.PersistentFlags().StringVar(&taint, "taint", "", "apply taint to node, making scheduling explicit")
 	RootCmd.PersistentFlags().StringVar(&providerConfig, "provider-config", "", "cloud provider configuration file")
-	RootCmd.PersistentFlags().StringVar(&nodeNumberString, "nodenumber", "100", "number of nodes to be registered")
+	RootCmd.PersistentFlags().StringVar(&nodeNumberString, "nodenumber", "1", "number of nodes to be registered")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
